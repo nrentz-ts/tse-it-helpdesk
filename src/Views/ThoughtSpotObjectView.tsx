@@ -186,11 +186,11 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
             setCustomActionPopupVisible(true);
           }}
           
-          //preRenderId="pre-render-with-liveboard-id"
-          //liveboardId="629866db-ad37-46a6-b485-45a128e34051"
+          
           preRenderId="liveboardEmbed"
-          isLiveboardStylingAndGroupingEnabled={true}
-          liveboardId={thoughtSpotObject.uuid}
+          liveboardId="629866db-ad37-46a6-b485-45a128e34051"
+//isLiveboardStylingAndGroupingEnabled={true}
+         // liveboardId={thoughtSpotObject.uuid}
           frameParams={{ width: "100%", height: "100%" }}
         />
       )}

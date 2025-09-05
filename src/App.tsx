@@ -598,10 +598,10 @@ function App() {
                 }
                 //hiddenActions={user.userRole.hiddenActions ? user.userRole.hiddenActions : undefined}
                 preRenderId="liveboardEmbed"
-                //liveboardId="629866db-ad37-46a6-b485-45a128e34051"
+               // liveboardId="629866db-ad37-46a6-b485-45a128e34051"
                 isLiveboardStylingAndGroupingEnabled={true}
                 
-                //liveboardId={""} //selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
+               //  liveboardId={""} //selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
               />
               {/* <PreRenderedSearchEmbed
                 answerId={''}//selectedThoughtSpotObject?.type == ThoughtSpotObjectType.ANSWER &&  selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
