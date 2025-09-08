@@ -5,11 +5,11 @@ import {
   FiPlus, 
   FiCalendar, 
   FiTarget, 
-  FiUsers, 
   FiGlobe, 
   FiBarChart, 
   FiPlay
 } from "react-icons/fi";
+import { HiRocketLaunch, HiUsers, HiStar } from "react-icons/hi2";
 
 interface HomePageViewProps {
   setSpotterPrompt: (prompt: string) => void;
@@ -32,9 +32,9 @@ const HomePageView: React.FC<HomePageViewProps> = ({
         <UserContext.Consumer>
           {({ user }) => {
             return (
-              <div className="min-h-screen bg-gray-50">
+              <div className="min-h-screen" style={{ backgroundColor: '#F6F4F5' }}>
                 {/* Header Section - Light Theme with Brand Accents */}
-                <section className="py-8 bg-white border-b border-gray-200">
+                <section className="py-8" style={{ backgroundColor: '#F6F4F5' }}>
                   <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
                       <div>
@@ -46,7 +46,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                           <FiPlus className="h-4 w-4 mr-2" />
                           New Campaign
                         </button>
-                        <button className="px-4 py-2 rounded-lg flex items-center transition-colors hover:opacity-80" style={{ color: BRAND_COLOR, backgroundColor: `${BRAND_COLOR}15`, border: `1px solid ${BRAND_COLOR}30` }}>
+                        <button className="px-4 py-2 rounded-lg flex items-center transition-colors hover:opacity-80" style={{ color: BRAND_COLOR, backgroundColor: '#ECECEC', border: '1px solid #ECECEC' }}>
                           <FiCalendar className="h-4 w-4 mr-2" />
                           Schedule Meeting
                         </button>
@@ -56,7 +56,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                 </section>
 
                 {/* Main Content - Light Theme */}
-                <section className="pb-8 bg-gray-50">
+                <section className="pb-8" style={{ backgroundColor: '#F6F4F5' }}>
                   <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-3 gap-8">
                       {/* Main Content Area */}
@@ -73,11 +73,8 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                             <div className="space-y-4">
                               <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                                 <div className="flex items-center space-x-4">
-                                  <div
-                                    className="flex h-10 w-10 items-center justify-center rounded-lg"
-                                    style={{ backgroundColor: BRAND_COLOR }}
-                                  >
-                                    <FiTarget className="h-5 w-5 text-white" />
+                                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500">
+                                    <HiRocketLaunch className="h-5 w-5 text-white" />
                                   </div>
                                   <div>
                                     <h4 className="font-medium">Q4 Product Launch</h4>
@@ -88,17 +85,14 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     Active
                                   </span>
-                                  <p className="text-sm text-gray-500 mt-1">Launched Nov 15</p>
+                                  <p className="text-sm text-gray-500 mt-1">Launched Aug 25</p>
                                 </div>
                               </div>
 
                               <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                                 <div className="flex items-center space-x-4">
-                                  <div
-                                    className="flex h-10 w-10 items-center justify-center rounded-lg"
-                                    style={{ backgroundColor: BRAND_COLOR }}
-                                  >
-                                    <FiUsers className="h-5 w-5 text-white" />
+                                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500">
+                                    <HiUsers className="h-5 w-5 text-white" />
                                   </div>
                                   <div>
                                     <h4 className="font-medium">Customer Retention Drive</h4>
@@ -106,20 +100,17 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border">
-                                    Scheduled
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Completed
                                   </span>
-                                  <p className="text-sm text-gray-500 mt-1">Starts Dec 15</p>
+                                  <p className="text-sm text-gray-500 mt-1">Ended Aug 20</p>
                                 </div>
                               </div>
 
                               <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                                 <div className="flex items-center space-x-4">
-                                  <div
-                                    className="flex h-10 w-10 items-center justify-center rounded-lg"
-                                    style={{ backgroundColor: BRAND_COLOR }}
-                                  >
-                                    <FiGlobe className="h-5 w-5 text-white" />
+                                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500">
+                                    <HiStar className="h-5 w-5 text-white" />
                                   </div>
                                   <div>
                                     <h4 className="font-medium">Holiday Sale Campaign</h4>
@@ -127,10 +118,10 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    Completed
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border">
+                                    Scheduled
                                   </span>
-                                  <p className="text-sm text-gray-500 mt-1">Ended Nov 30</p>
+                                  <p className="text-sm text-gray-500 mt-1">Starts Sep 15</p>
                                 </div>
                               </div>
                             </div>
@@ -143,9 +134,9 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                             <h2 className="text-xl font-semibold text-gray-900 mb-2">Quick Actions</h2>
                             <p className="text-gray-600 mb-6">Jump into your most common marketing tasks</p>
                             <div className="grid md:grid-cols-2 gap-4">
-                              <button className="h-auto p-4 text-left bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg transition-all shadow-sm hover:shadow-md">
+                              <button className="h-auto p-4 text-left bg-green-50 hover:bg-green-100 border border-green-200 hover:border-green-300 rounded-lg transition-all shadow-sm hover:shadow-md">
                                 <div className="flex items-center">
-                                  <FiTarget className="h-5 w-5 mr-3" style={{ color: BRAND_COLOR }} />
+                                  <FiTarget className="h-5 w-5 mr-3 text-green-600" />
                                   <div>
                                     <div className="font-medium">Create Campaign</div>
                                     <div className="text-sm text-gray-600">Start a new marketing campaign</div>
@@ -153,9 +144,9 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                 </div>
                               </button>
 
-                              <button className="h-auto p-4 text-left bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg transition-all shadow-sm hover:shadow-md">
+                              <button className="h-auto p-4 text-left bg-pink-50 hover:bg-pink-100 border border-pink-200 hover:border-pink-300 rounded-lg transition-all shadow-sm hover:shadow-md">
                                 <div className="flex items-center">
-                                  <FiUsers className="h-5 w-5 mr-3" style={{ color: BRAND_COLOR }} />
+                                  <HiUsers className="h-5 w-5 mr-3 text-pink-600" />
                                   <div>
                                     <div className="font-medium">Build Audience</div>
                                     <div className="text-sm text-gray-600">Create targeted segments</div>
@@ -163,9 +154,9 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                 </div>
                               </button>
 
-                              <button className="h-auto p-4 text-left bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg transition-all shadow-sm hover:shadow-md">
+                              <button className="h-auto p-4 text-left bg-purple-50 hover:bg-purple-100 border border-purple-200 hover:border-purple-300 rounded-lg transition-all shadow-sm hover:shadow-md">
                                 <div className="flex items-center">
-                                  <FiBarChart className="h-5 w-5 mr-3" style={{ color: BRAND_COLOR }} />
+                                  <FiBarChart className="h-5 w-5 mr-3 text-purple-600" />
                                   <div>
                                     <div className="font-medium">View Analytics</div>
                                     <div className="text-sm text-gray-600">Analyze campaign performance</div>
@@ -175,7 +166,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
 
                               <button className="h-auto p-4 text-left bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg transition-all shadow-sm hover:shadow-md">
                                 <div className="flex items-center">
-                                  <FiPlay className="h-5 w-5 mr-3" style={{ color: BRAND_COLOR }} />
+                                  <FiPlay className="h-5 w-5 mr-3 text-gray-600" />
                                   <div>
                                     <div className="font-medium">A/B Test</div>
                                     <div className="text-sm text-gray-600">Optimize your campaigns</div>
@@ -232,7 +223,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                 </div>
                               </div>
                               <div className="flex items-start space-x-3">
-                                <FiUsers className="h-4 w-4 text-green-500 mt-0.5" />
+                                <HiUsers className="h-4 w-4 text-green-500 mt-0.5" />
                                 <div>
                                   <p className="text-sm font-medium">New team member added</p>
                                   <p className="text-xs text-gray-500">Alex joined the design team</p>

@@ -30,7 +30,7 @@ export const StyleOptions: CustomStyle[] = [
     name: StyleOptionList.MetricsPulse,
     customCSS: {
       variables: {
-        "--ts-var-root-background": "#f8fafc",
+        "--ts-var-root-background": "#F6F4F5",
         "--ts-var-root-color": "#232946",
         "--ts-var-root-font-family": "'Inter', Arial, sans-serif",
         "--ts-var-nav-background": "#0a0a2d",
@@ -79,6 +79,7 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-liveboard-edit-bar-background": "#fff",
         "--ts-var-liveboard-cross-filter-layout-background": "#fff",
         "--ts-var-kpi-analyze-text-color": "#232946",
+        "--ts-var-kpi-hero-color": "black",
         "--ts-var-liveboard-tab-active-border-color": "#232946",
         "--ts-var-liveboard-tab-hover-color": "#36688D"        
       }
