@@ -414,7 +414,7 @@ function App() {
                   left: "4rem",
                   width: "calc(100vw - 4rem)",
                   height: "calc(100vh - 4rem)",
-                  overflow: "hidden",
+                  overflow: "auto",
                 }}
               >
                 {/* Home Image Page */}
