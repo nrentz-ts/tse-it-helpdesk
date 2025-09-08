@@ -485,7 +485,12 @@ function App() {
                                 width: "calc(100vw - 19rem)",
                                 height: "calc(100vh - 4rem)",
                               }
-                            : { width: "100%", height: "100%", padding: "4rem" }
+                            : { 
+                                width: "100%", 
+                                height: "100%", 
+                                padding: "4rem",
+                                backgroundColor: settings.style.backgroundColor
+                              }
                         }
                       >
                         {/* ThoughtSpot Object View */}

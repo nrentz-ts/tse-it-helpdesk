@@ -166,13 +166,13 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-kpi-hero-color": "var(--ts-var-root-color)",
         "--ts-var-kpi-comparison-color": "#A5ACB9",
 
-        "--ts-var-liveboard-tab-active-border-color": "#6A4ABA",
+        "--ts-var-liveboard-tab-active-border-color": "var(--ts-var-button--secondary-color)",
         "--ts-var-liveboard-tab-hover-color": "var(--ts-var-button--secondary-color)",
       },
       rules_UNSTABLE: {
         ".kpi-module__diffLabelAnomalyV2": {
           background: "#323946 !important",
-        },
+        }
       },
     },
   },
