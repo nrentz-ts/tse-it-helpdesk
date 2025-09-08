@@ -32,18 +32,18 @@ const HomePageView: React.FC<HomePageViewProps> = ({
         <UserContext.Consumer>
           {({ user }) => {
             return (
-              <div className="min-h-screen" style={{ backgroundColor: '#F6F4F5' }}>
+              <div className="min-h-screen" style={{ backgroundColor: settings.style.backgroundColor }}>
                 {/* Header Section - Light Theme with Brand Accents */}
-                <section className="py-8" style={{ backgroundColor: '#F6F4F5' }}>
+                <section className="py-8" style={{ backgroundColor: settings.style.backgroundColor }}>
                   <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
                       <div>
-                        <h1 className="text-3xl font-bold mb-2" style={{ color: BRAND_COLOR }}>Welcome back, {user.name}</h1>
+                        <h1 className="text-3xl font-bold mb-2" style={{ color: settings.style.textColor }}>Welcome back, {user.name}</h1>
                         <p className="text-gray-600">Here's what's happening with your marketing campaigns today.</p>
                       </div>
                       <div className="flex flex-col sm:flex-row gap-3">
-                        <button className="font-medium px-4 py-2 rounded-lg flex items-center transition-colors text-white hover:opacity-90" style={{ backgroundColor: BRAND_COLOR }}>
-                          <FiPlus className="h-4 w-4 mr-2" />
+                        <button className="font-medium px-4 py-2 rounded-lg flex items-center transition-colors hover:opacity-90" style={{ backgroundColor: settings.style.headerColor, color: settings.style.headerTextColor }}>
+                          <FiPlus className="h-4 w-4 mr-2" style={{ color: settings.style.headerTextColor }} />
                           New Campaign
                         </button>
                         <button className="px-4 py-2 rounded-lg flex items-center transition-colors hover:opacity-80" style={{ color: BRAND_COLOR, backgroundColor: '#ECECEC', border: '1px solid #ECECEC' }}>
@@ -56,7 +56,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                 </section>
 
                 {/* Main Content - Light Theme */}
-                <section className="pb-8" style={{ backgroundColor: '#F6F4F5' }}>
+                <section className="pb-8" style={{ backgroundColor: settings.style.backgroundColor }}>
                   <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-3 gap-8">
                       {/* Main Content Area */}
