@@ -263,6 +263,13 @@ function App() {
     }
   }, [spotterPrompt, updateSpotterVisibility, showSpotter, spotterEmbedRef]);
 
+  // Set document title to application name
+  useEffect(() => {
+    if (settings && settings.name) {
+      document.title = settings.name;
+    }
+  }, [settings.name]);
+
   // Get the settings from the URL path if it exists
   useEffect(() => {
     //get route from url
