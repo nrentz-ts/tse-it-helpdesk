@@ -98,8 +98,6 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-nav-color": "#fff",
         "--ts-var-application-color": "#232946",
       
-        "--ts-var-button-border-radius": "8px",
-      
       
         "--ts-var-button--primary-background": "#476B59",
         "--ts-var-button--primary--hover-background": "#385746",
