@@ -31,7 +31,7 @@ import RestReportsList from "./Views/RestReportsList";
 import LoginPopup from "./Views/Popups/LoginPopup";
 import { createClientWithoutAuth } from "./Util/Util";
 import HomePageView from "./Views/HomePage";
-import { CSSOverrides, defaultSettings } from "./Util/Types";
+import { CSSOverrides, StringOverrides, IconSpriteOverrides, defaultSettings } from "./Util/Types";
 import SpotterView from "./Views/SpotterView";
 import KPIChartView from "./Views/KPIChart";
 import SubMenuDetailsView from "./Views/SubMenuDetailsView";
@@ -402,6 +402,10 @@ function App() {
             "https://cdn.jsdelivr.net/gh/hannsta/general@latest/fonts2.css",
           customCSS: CSSOverrides(settings) as customCssInterface,
         },
+        content: {
+          strings: StringOverrides(settings) || {},
+        },
+        iconSpriteUrl: IconSpriteOverrides(settings),
       },
       // On successful login - note this will only be executed when the liveboard is displayed so we first have to test with API call below.
     })

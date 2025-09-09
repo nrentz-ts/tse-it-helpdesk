@@ -174,3 +174,29 @@ export const CSSOverrides = (settings: Settings) => {
     },
   } as customCssInterface;
 };
+
+export const StringOverrides = (settings: Settings): { [key: string]: string } | undefined => {
+  if (settings.style.preBuiltStyle !== StyleOptionList.None) {
+    let style = StyleOptions.find(
+      (style) => style.name === settings.style.preBuiltStyle
+    );
+    if (style && style.strings) {
+      console.log("found custom strings,", style.strings);
+      return style.strings;
+    }
+  }
+  return undefined;
+};
+
+export const IconSpriteOverrides = (settings: Settings): string | undefined => {
+  if (settings.style.preBuiltStyle !== StyleOptionList.None) {
+    let style = StyleOptions.find(
+      (style) => style.name === settings.style.preBuiltStyle
+    );
+    if (style && style.iconSpriteUrl) {
+      console.log("found custom icon sprite,", style.iconSpriteUrl);
+      return style.iconSpriteUrl;
+    }
+  }
+  return undefined;
+};

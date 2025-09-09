@@ -27,6 +27,8 @@ export enum StyleOptionList {
 interface CustomStyle {
   name: string;
   customCSS: customCssInterface;
+  strings?: { [key: string]: string };
+  iconSpriteUrl?: string;
 }
 export const StyleOptions: CustomStyle[] = [
   {
@@ -97,7 +99,10 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-nav-background": "#0a0a2d",
         "--ts-var-nav-color": "#fff",
         "--ts-var-application-color": "#232946",
-      
+
+        "--ts-var-button-border-radius": "3px",
+        "--ts-var-button--icon-border-radius": "3px",
+        "--ts-var-chip-border-radius": "3px",
       
         "--ts-var-button--primary-background": "#476B59",
         "--ts-var-button--primary--hover-background": "#385746",
@@ -125,6 +130,10 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-liveboard-tab-hover-color": "var(--ts-var-button--primary--active-background)",
       }
     },
+    strings: {
+      "AI Highlights": "KPI Summary",
+    },
+    iconSpriteUrl: "https://cdn.jsdelivr.net/gh/nrentz-ts/custom-css-demo/ai2.svg"
   },
   {
     name: StyleOptionList.Telvanta,
@@ -136,8 +145,6 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-nav-color": "#fff",
         "--ts-var-application-color": "#232946",
       
-        "--ts-var-button-border-radius": "8px",
-        "--ts-var-button--icon-border-radius": "8px",
       
       
         "--ts-var-button--primary-background": "#6A4ABA",
@@ -181,5 +188,7 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-root-background": "#F5F8FA",
       },
     },
+    strings: {},
+    iconSpriteUrl: undefined
   },
 ];
