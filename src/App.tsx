@@ -263,12 +263,100 @@ function App() {
     }
   }, [spotterPrompt, updateSpotterVisibility, showSpotter, spotterEmbedRef]);
 
-  // Set document title to application name
+  // Set document title and favicon from settings
   useEffect(() => {
     if (settings && settings.name) {
       document.title = settings.name;
     }
-  }, [settings.name]);
+    
+    if (settings && settings.logo && settings.logo.trim() !== '') {
+      // Create inverted version of logo for favicon
+      const createInvertedFavicon = (logoUrl: string) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous'; // Handle CORS if possible
+        
+        img.onload = () => {
+          try {
+            // Create canvas to manipulate the image
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            if (!ctx) return;
+            
+            // Set canvas size to match image (or standardize to 32x32 for favicon)
+            canvas.width = 32;
+            canvas.height = 32;
+            
+            // Draw only the first 100px of the image onto canvas (cropped and scaled to 32x32)
+            // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+            // sx=0, sy=0: start from top-left of source image
+            // sWidth=100: take only first 100px width from source
+            // sHeight=img.height: take full height from source
+            // dx=0, dy=0: place at top-left of canvas
+            // dWidth=32, dHeight=32: scale to fill entire 32x32 canvas
+            const cropWidth = Math.min(154, img.width); // Don't crop more than image width
+            ctx.drawImage(img, 0, 0, cropWidth, img.height, 0, 0, 32, 32);
+            
+            // Get image data to manipulate pixels
+            const imageData = ctx.getImageData(0, 0, 32, 32);
+            const data = imageData.data;
+            
+            // Invert colors (skip alpha channel)
+            for (let i = 0; i < data.length; i += 4) {
+              data[i] = 255 - data[i];     // Red
+              data[i + 1] = 255 - data[i + 1]; // Green
+              data[i + 2] = 255 - data[i + 2]; // Blue
+              // data[i + 3] is alpha, leave unchanged
+            }
+            
+            // Put the modified image data back
+            ctx.putImageData(imageData, 0, 0);
+            
+            // Convert canvas to data URL
+            const invertedDataUrl = canvas.toDataURL('image/png');
+            
+            // Update favicon with inverted image
+            let favicon = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+            if (favicon) {
+              favicon.href = invertedDataUrl;
+            } else {
+              // Create favicon link if it doesn't exist
+              favicon = document.createElement('link');
+              favicon.rel = 'icon';
+              favicon.href = invertedDataUrl;
+              document.head.appendChild(favicon);
+            }
+            
+            // Update apple-touch-icon with inverted image
+            let appleFavicon = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
+            if (appleFavicon) {
+              appleFavicon.href = invertedDataUrl;
+            }
+          } catch (error) {
+            console.log('Could not create inverted favicon due to CORS, using original logo');
+            // Fallback to original logo if CORS or other issues
+            let favicon = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+            if (favicon) {
+              favicon.href = logoUrl;
+            } else {
+              favicon = document.createElement('link');
+              favicon.rel = 'icon';
+              favicon.href = logoUrl;
+              document.head.appendChild(favicon);
+            }
+          }
+        };
+        
+        img.onerror = () => {
+          console.log('Could not load logo image, keeping default favicon');
+        };
+        
+        img.src = logoUrl;
+      };
+      
+      createInvertedFavicon(settings.logo);
+    }
+  }, [settings.name, settings.logo]);
 
   // Get the settings from the URL path if it exists
   useEffect(() => {
