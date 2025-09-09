@@ -2,8 +2,8 @@ import React from "react";
 import { useEffect } from "react";
 import { Settings } from "../SettingsConfiguration";
 
-const user = "thoughtspot";
-const repo = "ts-demo-builder-demos";
+const user = "nrentz-ts";
+const repo = "tse-style-demos";
 const branch = "main";
 
 interface GitSettingsProps {
