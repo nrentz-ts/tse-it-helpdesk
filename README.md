@@ -1,10 +1,31 @@
 # TSE Demo Builder
 
-The TSE Demo Builder allows you to easily create demos for customers using either sample content or pre-built content.  
+This TSE demo builder is built off of the original [TSE Demo builder Github repo](https://github.com/thoughtspot/ts-demo-builder).
 
 ## Running from Vercel
 
-The easiest way to use [TSE Demo Builder](https://ts-demo-builder-six.vercel.app) is to use the hosted version.  Then use the settings to pick either a pre-defined configuration or add your own.
+The easiest way to use this demo is to run them directly from Vercel. You can access the same repo from three addresses currently - so you can showcase multiple apps branded differently to fit each core app's design language.
+* [Metric Pulse](https://metricpulse.vercel.app/)
+* [Nexora](nexora-webapp.vercel.app)
+* [Telvanta](https://telvanta.vercel.app/)
+
+You can then load the appropriate pre-built configuration for each app.
+
+## Key changes made to this app when compared to the legacy [TSE Demo builder](https://github.com/thoughtspot/ts-demo-builder)
+### Branding
+* Built a non-changeable home page simulating a marketing application. This home page dynamically picks up the user name in the app, and follows the app's main theme colors.
+* The app take a portion of the app's icon to create a favicon on the Browser
+* The app takes the app's name as the name of the tab in your browser
+
+### Features
+#### Spotter Embed
+* The Spotter embed page fully follows the app's theme to look blended into the core app
+* SpotterEmbed now shows working custom actions - note that many custom actions are hardcoded to be hidden directly from Spotter embed to avoid a large dropdown of strangely named custom actions.
+
+#### Pre-built styles
+* Can now inject CSS variables, logo, and string replacements right in the pre-built styles.
+* Created three pre-built styles that fit the pre-built demo apps, and removed the other default styles from the legacy demo
+
 
 ## Installing and running locally
 
@@ -18,7 +39,7 @@ To install locally you can either install using the Git command line (recommende
 
 To install using `git` open Terminal or PowerShell and navigate to a folder where you want to install the demo builder.  Note that the demo builder will be installed into a child folder.
 
-Now run the following command: `git clone https://github.com/thoughtspot/ts-demo-builder.git`
+Now run the following command: `git clone https://github.com/nrentz-ts/ts-demo-builder-sept10.git`
 
 You should see files download and then get a success message.
 
