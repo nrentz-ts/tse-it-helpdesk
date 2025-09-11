@@ -11,7 +11,8 @@ The easiest way to use this demo is to run them directly from Vercel. You can ac
 
 You can then load the appropriate pre-built configuration for each app.
 
-## Key changes made to this app when compared to the legacy [TSE Demo builder](https://github.com/thoughtspot/ts-demo-builder)
+## Key changes made to this app when compared to the legacy TSE Demo builder
+<details>
 ### Branding
 * Built a non-changeable home page simulating a marketing application. This home page dynamically picks up the user name in the app, and follows the app's main theme colors.
 * The app take a portion of the app's icon to create a favicon on the Browser
@@ -25,7 +26,7 @@ You can then load the appropriate pre-built configuration for each app.
 #### Pre-built styles
 * Can now inject CSS variables, logo, and string replacements right in the pre-built styles.
 * Created three pre-built styles that fit the pre-built demo apps, and removed the other default styles from the legacy demo
-
+</details>
 
 ## Installing and running locally
 
