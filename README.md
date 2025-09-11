@@ -6,7 +6,7 @@ This TSE demo builder is built off of the original [TSE Demo builder Github repo
 
 The easiest way to use this demo is to run them directly from Vercel. You can access the same repo from three addresses currently - so you can showcase multiple apps branded differently to fit each core app's design language.
 * [Metric Pulse](https://metricpulse.vercel.app/)
-* [Nexora](nexora-webapp.vercel.app)
+* [Nexora](https://nexora-webapp.vercel.app)
 * [Telvanta](https://telvanta.vercel.app/)
 
 You can then load the appropriate pre-built configuration for each app.
