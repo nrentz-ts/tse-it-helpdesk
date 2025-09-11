@@ -103,6 +103,7 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-button-border-radius": "3px",
         "--ts-var-button--icon-border-radius": "3px",
         "--ts-var-chip-border-radius": "3px",
+        "--ts-var-viz-border-radius": "3px",
       
         "--ts-var-button--primary-background": "#476B59",
         "--ts-var-button--primary--hover-background": "#385746",
