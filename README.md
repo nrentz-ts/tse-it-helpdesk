@@ -13,6 +13,7 @@ You can then load the appropriate pre-built configuration for each app.
 
 ## Key changes made to this app when compared to the legacy TSE Demo builder
 <details>
+<summary>Branding, feature, and style changes detailed log</summary>
 ### Branding
 * Built a non-changeable home page simulating a marketing application. This home page dynamically picks up the user name in the app, and follows the app's main theme colors.
 * The app take a portion of the app's icon to create a favicon on the Browser
