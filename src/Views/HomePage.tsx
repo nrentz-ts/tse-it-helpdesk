@@ -26,6 +26,31 @@ const HomePageView: React.FC<HomePageViewProps> = ({
 }) => {
   const BRAND_COLOR = "#08072D";
   
+  // Helper functions to calculate dynamic dates
+  const formatDate = (date: Date): string => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[date.getMonth()]} ${date.getDate()}`;
+  };
+  
+  const getLaunchDate = (): string => {
+    const date = new Date();
+    date.setDate(date.getDate() - 10);
+    return `Launched ${formatDate(date)}`;
+  };
+  
+  const getEndDate = (): string => {
+    const date = new Date();
+    date.setDate(date.getDate() - 13);
+    return `Ended ${formatDate(date)}`;
+  };
+  
+  const getStartDate = (): string => {
+    const date = new Date();
+    date.setDate(date.getDate() + 4);
+    return `Starts ${formatDate(date)}`;
+  };
+  
   return (
     <SettingsContext.Consumer>
       {({ settings }) => (
@@ -85,7 +110,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     Active
                                   </span>
-                                  <p className="text-sm text-gray-500 mt-1">Launched Aug 25</p>
+                                  <p className="text-sm text-gray-500 mt-1">{getLaunchDate()}</p>
                                 </div>
                               </div>
 
@@ -103,7 +128,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                     Completed
                                   </span>
-                                  <p className="text-sm text-gray-500 mt-1">Ended Aug 20</p>
+                                  <p className="text-sm text-gray-500 mt-1">{getEndDate()}</p>
                                 </div>
                               </div>
 
@@ -121,7 +146,7 @@ const HomePageView: React.FC<HomePageViewProps> = ({
                                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border">
                                     Scheduled
                                   </span>
-                                  <p className="text-sm text-gray-500 mt-1">Starts Sep 15</p>
+                                  <p className="text-sm text-gray-500 mt-1">{getStartDate()}</p>
                                 </div>
                               </div>
                             </div>
