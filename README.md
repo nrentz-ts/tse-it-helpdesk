@@ -42,7 +42,7 @@ To install locally you can either install using the Git command line (recommende
 
 To install using `git` open Terminal or PowerShell and navigate to a folder where you want to install the demo builder.  Note that the demo builder will be installed into a child folder.
 
-Now run the following command: `git clone https://github.com/nrentz-ts/ts-demo-builder-sept10.git`
+Now run the following command: `git clone https://github.com/nrentz-ts/tse-demo-2025.git`
 
 You should see files download and then get a success message.
 
