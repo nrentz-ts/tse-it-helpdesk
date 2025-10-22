@@ -195,7 +195,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
               position: CustomActionsPosition.CONTEXTMENU,
               target: CustomActionTarget.VIZ,
               dataModelIds: {
-                modelColumnNames: ['cd252e5c-b552-49a8-821d-3eadaa049cca::state']
+                modelColumnNames: ['4abeac87-b706-4107-8b84-7e7087a2fee0::state']
               }
             },
             {
