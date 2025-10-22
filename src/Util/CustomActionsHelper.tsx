@@ -115,10 +115,137 @@ export function formatNumber(num: number | string): string {
   }
 }
 
+// Function to detect and format date/time values intelligently
+export function formatDateValue(value: any, attributeName?: string): string {
+  try {
+    // Handle different value formats from ThoughtSpot
+    let epochValue: number | null = null;
+    
+    if (typeof value === 'number') {
+      epochValue = value;
+    } else if (value && typeof value === 'object' && value.v && value.v.s) {
+      epochValue = value.v.s;
+    } else if (value && typeof value === 'string') {
+      // Try to parse as number
+      const parsed = parseFloat(value);
+      if (!isNaN(parsed)) {
+        epochValue = parsed;
+      }
+    }
+    
+    // If we have an epoch value, format it intelligently
+    if (epochValue !== null) {
+      // Additional validation: epoch values should be reasonable (not too small or too large)
+      // Typical epoch range: 1970-2038 (0 to ~2.1 billion seconds)
+      if (epochValue < 0 || epochValue > 2147483647) {
+        return value.toString();
+      }
+      
+      const date = new Date(epochValue * 1000);
+      
+      // Check if it's a valid date
+      if (isNaN(date.getTime())) {
+        return value.toString();
+      }
+      
+      // Additional check: if the date is before 1970 or after 2038, it's probably not a real epoch
+      const year = date.getFullYear();
+      if (year < 1970 || year > 2038) {
+        return value.toString();
+      }
+      
+      // Determine format based on attribute name patterns
+      const attrName = attributeName?.toLowerCase() || '';
+      
+      // Monthly data (like "Aug 2025")
+      if (attrName.includes('month') || attrName.includes('monthly')) {
+        return date.toLocaleDateString('en-US', { 
+          month: 'short', 
+          year: 'numeric',
+          timeZone: 'UTC'
+        });
+      }
+      
+      // Yearly data
+      if (attrName.includes('year') || attrName.includes('yearly')) {
+        return date.toLocaleDateString('en-US', { 
+          year: 'numeric',
+          timeZone: 'UTC'
+        });
+      }
+      
+      // Daily data
+      if (attrName.includes('day') || attrName.includes('daily') || attrName.includes('date')) {
+        return date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric',
+          timeZone: 'UTC'
+        });
+      }
+      
+      // Hourly or time-based data
+      if (attrName.includes('hour') || attrName.includes('time') || attrName.includes('hourly')) {
+        return date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'UTC'
+        });
+      }
+      
+      // Default: try to detect the granularity from the timestamp
+      // If the time component is 00:00:00, it's likely daily or monthly data
+      const hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes();
+      const seconds = date.getUTCSeconds();
+      
+      if (hours === 0 && minutes === 0 && seconds === 0) {
+        // Check if it's the first day of the month (monthly data)
+        if (date.getUTCDate() === 1) {
+          return date.toLocaleDateString('en-US', { 
+            month: 'short', 
+            year: 'numeric',
+            timeZone: 'UTC'
+          });
+        } else {
+          // Daily data
+          return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric',
+            timeZone: 'UTC'
+          });
+        }
+      } else {
+        // Has time component, show datetime
+        return date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZone: 'UTC'
+        });
+      }
+    }
+    
+    // Not a date, return as-is
+    return value.toString();
+    
+  } catch (error) {
+    console.error('Error formatting date value:', error);
+    return value.toString();
+  }
+}
+
 // Function to extract JIRA ticket data from the ThoughtSpot payload
 export function extractJiraDataFromPayload(payload: any) {
   try {
     let attributeValue: string | null = null;
+    let attributeName: string | null = null;
     let measureValue: number | null = null;
     let measureName: string | null = null;
     let visualizationName: string | null = null;
@@ -128,15 +255,24 @@ export function extractJiraDataFromPayload(payload: any) {
       visualizationName = payload.embedAnswerData.name;
     }
     
-    // Extract attribute value from selectedPoints
+    // Extract attribute value and name from selectedPoints
     if (payload.contextMenuPoints && 
         payload.contextMenuPoints.selectedPoints && 
         payload.contextMenuPoints.selectedPoints[0] &&
         payload.contextMenuPoints.selectedPoints[0].selectedAttributes &&
-        payload.contextMenuPoints.selectedPoints[0].selectedAttributes[0] &&
-        payload.contextMenuPoints.selectedPoints[0].selectedAttributes[0].value) {
+        payload.contextMenuPoints.selectedPoints[0].selectedAttributes[0]) {
       
-      attributeValue = payload.contextMenuPoints.selectedPoints[0].selectedAttributes[0].value;
+      const selectedAttribute = payload.contextMenuPoints.selectedPoints[0].selectedAttributes[0];
+      
+      // Extract attribute value
+      if (selectedAttribute.value) {
+        attributeValue = selectedAttribute.value;
+      }
+      
+      // Extract attribute name for smart date formatting
+      if (selectedAttribute.column && selectedAttribute.column.name) {
+        attributeName = selectedAttribute.column.name;
+      }
     }
     
     // Extract measure value and name from clickedPoint.selectedMeasures
@@ -188,14 +324,19 @@ export function extractJiraDataFromPayload(payload: any) {
     // Format the measure value for readability
     const formattedMeasureValue = measureValue ? formatNumber(measureValue) : 'Not available';
     
+    // Format the attribute value intelligently (handles date/time formatting)
+    const formattedAttributeValue = attributeValue ? formatDateValue(attributeValue, attributeName || undefined) : 'Unknown';
+    
     // Create summary and description
-    const summary = `Data Analysis Issue: ${attributeValue || 'Unknown'} ${measureName || 'data'}`;
-    const description = `Visualization: ${visualizationName || 'Not available'}\nAttribute: ${attributeValue || 'Not available'}\nMeasure: ${formattedMeasureValue} (${measureName || 'Not available'})\nPlease investigate this data point for deeper analysis.`;
+    const summary = `Data Analysis Issue: ${formattedAttributeValue} ${measureName || 'data'}`;
+    const description = `Visualization: ${visualizationName || 'Not available'}\nAttribute: ${formattedAttributeValue}\nMeasure: ${formattedMeasureValue} (${measureName || 'Not available'})\nPlease investigate this data point for deeper analysis.`;
     
     const jiraData = {
       summary: summary,
       description: description,
       attributeValue: attributeValue,
+      formattedAttributeValue: formattedAttributeValue,
+      attributeName: attributeName,
       measureValue: measureValue,
       formattedMeasureValue: formattedMeasureValue,
       measureName: measureName,
