@@ -2,9 +2,8 @@ import React from "react";
 import { useEffect } from "react";
 import { Settings } from "../SettingsConfiguration";
 
-const user = "nrentz-ts";
-const repo = "tse-style-demos";
-const branch = "main";
+// Configuration for local config files
+const CONFIG_FOLDER = "/configs";
 
 interface GitSettingsProps {
   setSettings: (settings: Settings) => void;
@@ -27,24 +26,27 @@ const GitSettings: React.FC<GitSettingsProps> = ({
       {!showAsList ? (
         <>
           <div className="flex flex-row space-x-4">
-            <div className="w-2/5 font-bold pl-4">Demo Name</div>
-            <div className="w-2/5 font-bold pl-4">URL Path</div>
-            <div className="w-1/5"></div>
+            <div className="w-1/3 font-bold pl-4">Demo Name</div>
+            <div className="w-1/3 font-bold pl-4">Description</div>
+            <div className="w-1/3 font-bold pl-4">URL Path</div>
           </div>
           {availableDemos &&
             availableDemos.map((demo, index) => (
               <div key={index} className="flex flex-row space-x-4 items-center">
                 <div
-                  className="w-2/5 hover:text-blue-700 text-blue-500 hover:cursor-pointer  pl-4"
+                  className="w-1/3 hover:text-blue-700 text-blue-500 hover:cursor-pointer  pl-4"
                   onClick={() => {
                     GetDemo(demo.path).then((data) => {
                       setSettings(data);
                     });
                   }}
                 >
-                  {demo.path.replace(".txt", "")}
+                  {demo.name || demo.path.replace(".txt", "")}
                 </div>
-                <div className="w-2/5 hover:text-blue-500 hover:cursor-pointer">
+                <div className="w-1/3 text-gray-600 pl-4">
+                  {demo.description || "No description available"}
+                </div>
+                <div className="w-1/3 hover:text-blue-500 hover:cursor-pointer">
                   <a href={"/" + CleanPath(demo.path)}>
                     /{CleanPath(demo.path)}
                   </a>
@@ -68,7 +70,7 @@ const GitSettings: React.FC<GitSettingsProps> = ({
                     });
                   }}
                 >
-                  {demo.path.replace(".txt", "")}
+                  {demo.name || demo.path.replace(".txt", "")}
                 </div>
               </div>
             ))}
@@ -88,23 +90,30 @@ export const CleanPath = (path: string) => {
     .toLowerCase();
 };
 
-// Load a demo from the github repository
+// Load a demo from the local config folder
 export const GetDemo = async (demo: string) => {
-  return await fetch(
-    `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${demo}`
-  )
-    .then((response) => response.text())
+  return await fetch(`${CONFIG_FOLDER}/${demo}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load config: ${response.statusText}`);
+      }
+      return response.text();
+    })
     .then((data) => JSON.parse(data));
 };
 
-// Get the available demos from the github repository
+// Get the available demos from the local config folder
 export const GetAvailableDemos = async () => {
-  return await fetch(
-    `https://api.github.com/repos/${user}/${repo}/git/trees/${branch}?recursive=1`,
-    {}
-  )
-    .then((response) => response.json())
-    .then((data) =>
-      data.tree.filter((item: any) => !item.path.startsWith(".github"))
-    );
+  try {
+    const response = await fetch(`${CONFIG_FOLDER}/manifest.json`);
+    if (!response.ok) {
+      throw new Error(`Failed to load manifest: ${response.statusText}`);
+    }
+    const manifest = await response.json();
+    return manifest.configs;
+  } catch (error) {
+    console.error('Error loading config manifest:', error);
+    // Fallback to empty array if manifest fails
+    return [];
+  }
 };

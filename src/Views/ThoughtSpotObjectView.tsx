@@ -188,9 +188,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
           
           
           preRenderId="liveboardEmbed"
-          liveboardId="629866db-ad37-46a6-b485-45a128e34051"
+          liveboardId={thoughtSpotObject.uuid}
 //isLiveboardStylingAndGroupingEnabled={true}
-         // liveboardId={thoughtSpotObject.uuid}
           frameParams={{ width: "100%", height: "100%" }}
         />
       )}
