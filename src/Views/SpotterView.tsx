@@ -1,7 +1,9 @@
 import { Page, SettingsContext } from "../App";
-import { SpotterEmbed } from "@thoughtspot/visual-embed-sdk/react";
-import { createRef, useEffect } from "react";
+import { SpotterEmbed, CustomActionsPosition, CustomActionTarget } from "@thoughtspot/visual-embed-sdk/react";
+import { createRef, useEffect, useState } from "react";
 import { CloseButton } from "../Settings/Inputs/InputMenus";
+import CustomActionPopup from "./Popups/CustomActionPopup";
+import { extractJiraDataFromPayload, openJiraTicketCreation } from "../Util/CustomActionsHelper";
 
 interface SpotterViewProps {
   setShowSpotter: (show: boolean) => void;
@@ -20,6 +22,8 @@ const SpotterView = ({
   setSpotterLoaded,
 }: SpotterViewProps) => {
   const ref = createRef<HTMLDivElement>();
+  const [customActionPopupVisible, setCustomActionPopupVisible] = useState<boolean>(false);
+  const [customActionData, setCustomActionData] = useState<any>(null);
   useEffect(() => {
     if (!spotterLoaded) return;
     let spotterEmbed = document.getElementById(
@@ -71,6 +75,41 @@ const SpotterView = ({
               searchQuery: spotterPrompt,
               //executeSearch: true,
             }}
+            customActions={[
+              {
+                id: 'jira-custom-action',
+                name: 'Log Jira Issue',
+                position: CustomActionsPosition.CONTEXTMENU,
+                target: CustomActionTarget.SPOTTER,
+              },
+            ]}
+            onCustomAction={(data: any) => {
+              console.log('🎯 Custom Action event triggered (SpotterView):', data);
+              
+              // Handle the JIRA custom action
+              const jiraActionId = 'jira-custom-action';
+              if (data.data?.id === jiraActionId) {
+                // Ensure popup is closed and data is cleared
+                setCustomActionPopupVisible(false);
+                setCustomActionData(null);
+                
+                // Extract data from the payload for JIRA ticket creation
+                const jiraData = extractJiraDataFromPayload(data.data);
+                
+                if (jiraData) {
+                  // Open JIRA ticket creation page in a new tab
+                  openJiraTicketCreation(jiraData);
+                } else {
+                  alert('No data found to create JIRA ticket. Please try clicking on a data point first.');
+                }
+                return;
+              }
+              
+              // Default behavior for other custom actions (show popup)
+              console.log('📋 Default custom action handler (SpotterView):', data);
+              setCustomActionData(data.data);
+              setCustomActionPopupVisible(true);
+            }}
           />
           {!spotterLoaded && (
             <div className="flex flex-col justify-center items-center p-4 mb-10">
@@ -101,6 +140,12 @@ const SpotterView = ({
             </div>
           )}
           {/* <button onClick={()=>pinViz()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button> */}
+          {customActionPopupVisible && customActionData && (
+            <CustomActionPopup
+              data={customActionData}
+              closePopup={() => setCustomActionPopupVisible(false)}
+            />
+          )}
         </div>
       )}
     </SettingsContext.Consumer>

@@ -1,9 +1,10 @@
-import { SpotterEmbed, EmbedEvent, Action } from "@thoughtspot/visual-embed-sdk";
+import { SpotterEmbed, EmbedEvent, Action, CustomActionsPosition, CustomActionTarget } from "@thoughtspot/visual-embed-sdk";
 
 import { useContext, useEffect, useRef, useState } from "react";
 import { SettingsContext } from "../../App";
 import { SimpleSpotter } from "../../Settings/StandardMenus/SimpleSpotterConfig";
 import CustomActionPopup from "../Popups/CustomActionPopup";
+import { extractJiraDataFromPayload, openJiraTicketCreation } from "../../Util/CustomActionsHelper";
 
 interface SimpleSpotterProps {
   simpleSpotter: SimpleSpotter;
@@ -26,6 +27,14 @@ const SimpleSpotterView: React.FC<SimpleSpotterProps> = ({ simpleSpotter }) => {
           "send-to-hubspot" as Action,
           "send-to-slack" as Action,
           "create-jira" as Action,
+        ],
+        customActions: [
+          {
+            id: 'jira-custom-action',
+            name: 'Log Jira Issue',
+            position: CustomActionsPosition.CONTEXTMENU,
+            target: CustomActionTarget.SPOTTER,
+          },
         ],
         /*
         runtimeFilters: [
@@ -59,7 +68,29 @@ const SimpleSpotterView: React.FC<SimpleSpotterProps> = ({ simpleSpotter }) => {
       });
       embedRef.current.render();
       embedRef.current.on(EmbedEvent.CustomAction, (data: any) => {
-        console.log(data.data);
+        console.log('🎯 Custom Action event triggered (SimpleSpotter):', data);
+        
+        // Handle the JIRA custom action
+        const jiraActionId = 'jira-custom-action';
+        if (data.data?.id === jiraActionId) {
+          // Ensure popup is closed and data is cleared
+          setCustomActionPopupVisible(false);
+          setCustomActionData(null);
+          
+          // Extract data from the payload for JIRA ticket creation
+          const jiraData = extractJiraDataFromPayload(data.data);
+          
+          if (jiraData) {
+            // Open JIRA ticket creation page in a new tab
+            openJiraTicketCreation(jiraData);
+          } else {
+            alert('No data found to create JIRA ticket. Please try clicking on a data point first.');
+          }
+          return;
+        }
+        
+        // Default behavior for other custom actions (show popup)
+        console.log('📋 Default custom action handler (SimpleSpotter):', data);
         setCustomActionData(data.data);
         setCustomActionPopupVisible(true);
       });

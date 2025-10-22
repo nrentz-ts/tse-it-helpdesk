@@ -113,15 +113,13 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-menu-background": "#fff",
         "--ts-var-menu-color": "#232946",
       
-        "--ts-var-viz-background": "#fff",
-        "--ts-var-viz-title-color": "#232946",
-        "--ts-var-viz-description-color": "#6b7280",
+        
+      
       
         "--ts-var-chip-background": "#f0f1f6",
         "--ts-var-chip-color": "#232946",
       
         "--ts-var-kpi-analyze-text-color": "var(--ts-var-liveboard-tab-active-border-color)",
-        "--ts-var-kpi-hero-color": "black",
         "--ts-var-liveboard-tab-active-border-color": "#476B59",
         "--ts-var-liveboard-tab-hover-color": "var(--ts-var-button--primary--active-background)",
       }
