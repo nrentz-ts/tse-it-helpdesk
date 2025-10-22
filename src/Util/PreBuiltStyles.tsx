@@ -99,11 +99,6 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-nav-background": "#0a0a2d",
         "--ts-var-nav-color": "#fff",
         "--ts-var-application-color": "#232946",
-
-        "--ts-var-button-border-radius": "3px",
-        "--ts-var-button--icon-border-radius": "3px",
-        "--ts-var-chip-border-radius": "3px",
-        "--ts-var-viz-border-radius": "3px",
       
         "--ts-var-button--primary-background": "#476B59",
         "--ts-var-button--primary--hover-background": "#385746",
@@ -130,11 +125,7 @@ export const StyleOptions: CustomStyle[] = [
         "--ts-var-liveboard-tab-active-border-color": "#476B59",
         "--ts-var-liveboard-tab-hover-color": "var(--ts-var-button--primary--active-background)",
       }
-    },
-    strings: {
-      "AI Highlights": "KPI Summary",
-    },
-    iconSpriteUrl: "https://cdn.jsdelivr.net/gh/nrentz-ts/custom-css-demo/ai2.svg"
+    }
   },
   {
     name: StyleOptionList.Telvanta,
