@@ -1,0 +1,9 @@
+{
+  "configs": [
+    {
+      "path": "Nexora.txt",
+      "name": "Nexora",
+      "description": "Nexora configuration"
+    }
+  ]
+}
