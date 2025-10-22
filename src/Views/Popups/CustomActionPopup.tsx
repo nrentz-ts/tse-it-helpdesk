@@ -11,6 +11,11 @@ const CustomActionPopup: React.FC<CustomActionPopupProps> = ({
   data,
   closePopup,
 }) => {
+  // Safety check to prevent runtime errors
+  if (!data || !data.embedAnswerData) {
+    return null;
+  }
+
   let embeddedAnswerColumnData: any = [];
   let dataObject = {} as any;
   if (data.embedAnswerData.data) {

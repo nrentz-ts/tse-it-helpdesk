@@ -24,6 +24,12 @@ import { FilterType } from "../Settings/FiltersConfiguration";
 import DateFilter from "./Filters/DateFilter";
 import { FaCog } from "react-icons/fa";
 import { HiComputerDesktop } from "react-icons/hi2";
+import { 
+  extractSearchDataFromPayload, 
+  openGoogleSearch, 
+  extractJiraDataFromPayload, 
+  openJiraTicketCreation 
+} from "../Util/CustomActionsHelper";
 
 interface ThoughtSpotObjectViewProps {
   user: User;
@@ -182,8 +188,65 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
               ? user.userRole.visibleActions
               : undefined
           }
-          onCustomAction={(data) => {
-            console.log(data.data);
+          customActions={[
+            {
+              id: 'cbca-google-search',
+              name: 'Google Search',
+              position: CustomActionsPosition.CONTEXTMENU,
+              target: CustomActionTarget.VIZ,
+              dataModelIds: {
+                modelColumnNames: ['cd252e5c-b552-49a8-821d-3eadaa049cca::state']
+              }
+            },
+            {
+              id: 'jira-custom-action',
+              name: 'Log Jira Issue',
+              position: CustomActionsPosition.CONTEXTMENU,
+              target: CustomActionTarget.VIZ,
+            },
+          ]}
+          onCustomAction={(data: any) => {
+            console.log('🎯 Custom Action event triggered:', data);
+            
+            // Handle the Google search custom action
+            const googleSearchActionId = 'cbca-google-search';
+            if (data.data?.id === googleSearchActionId) {
+              // Ensure popup is closed and data is cleared
+              setCustomActionPopupVisible(false);
+              setCustomActionData(null);
+              
+              // Extract data from the payload for Google search
+              const searchData = extractSearchDataFromPayload(data.data);
+              
+              if (searchData) {
+                // Open Google search in a new tab
+                openGoogleSearch(searchData);
+              } else {
+                alert('No data found to search. Please try clicking on a data point first.');
+              }
+              return;
+            }
+            
+            // Handle the JIRA custom action
+            const jiraActionId = 'jira-custom-action';
+            if (data.data?.id === jiraActionId) {
+              // Ensure popup is closed and data is cleared
+              setCustomActionPopupVisible(false);
+              setCustomActionData(null);
+              
+              // Extract data from the payload for JIRA ticket creation
+              const jiraData = extractJiraDataFromPayload(data.data);
+              
+              if (jiraData) {
+                // Open JIRA ticket creation page in a new tab
+                openJiraTicketCreation(jiraData);
+              } else {
+                alert('No data found to create JIRA ticket. Please try clicking on a data point first.');
+              }
+              return;
+            }
+            
+            // Default behavior for other custom actions (show popup)
             setCustomActionData(data.data);
             setCustomActionPopupVisible(true);
           }}
@@ -200,9 +263,50 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
           hiddenActions={user.userRole.hiddenActions}
           visibleActions={user.userRole.visibleActions}
           dataPanelV2={true}
-          onCustomAction={(data) => {
-            console.log(data.data);
-            setCustomActionData(data.data);
+          onCustomAction={(data: any) => {
+            console.log('🎯 Custom Action event triggered (SearchEmbed):', data);
+            
+            // Handle the Google search custom action
+            const googleSearchActionId = 'cbca-google-search';
+            if (data.data?.id === googleSearchActionId) {
+              // Ensure popup is closed and data is cleared
+              setCustomActionPopupVisible(false);
+              setCustomActionData(null);
+              
+              // Extract data from the payload for Google search
+              const searchData = extractSearchDataFromPayload(data.data);
+              
+              if (searchData) {
+                // Open Google search in a new tab
+                openGoogleSearch(searchData);
+              } else {
+                alert('No data found to search. Please try clicking on a data point first.');
+              }
+              return;
+            }
+            
+            // Handle the JIRA custom action
+            const jiraActionId = 'jira-custom-action';
+            if (data.data?.id === jiraActionId) {
+              // Ensure popup is closed and data is cleared
+              setCustomActionPopupVisible(false);
+              setCustomActionData(null);
+              
+              // Extract data from the payload for JIRA ticket creation
+              const jiraData = extractJiraDataFromPayload(data.data);
+              
+              if (jiraData) {
+                // Open JIRA ticket creation page in a new tab
+                openJiraTicketCreation(jiraData);
+              } else {
+                alert('No data found to create JIRA ticket. Please try clicking on a data point first.');
+              }
+              return;
+            }
+            
+            // Default behavior for other custom actions (show popup)
+            console.log('📋 Default custom action handler (SearchEmbed):', data);
+            setCustomActionData(data);
             setCustomActionPopupVisible(true);
           }}
           //preRenderId="searchEmbed"
@@ -210,7 +314,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
           frameParams={{ width: "100%", height: "100%" }}
         />
       )}
-      {customActionPopupVisible && (
+      {customActionPopupVisible && customActionData && (
         <CustomActionPopup
           data={customActionData}
           closePopup={() => setCustomActionPopupVisible(false)}
