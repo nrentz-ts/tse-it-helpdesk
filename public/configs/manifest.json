@@ -4,6 +4,11 @@
       "path": "Nexora.txt",
       "name": "Nexora",
       "description": "Nexora configuration"
+    },
+    {
+      "path": "champagne-masters.txt",
+      "name": "Champagne Masters - CBCA",
+      "description": "To reproduce the custom action problem"
     }
   ]
 }
