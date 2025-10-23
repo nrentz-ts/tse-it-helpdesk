@@ -31,7 +31,7 @@ const SimpleSpotterView: React.FC<SimpleSpotterProps> = ({ simpleSpotter }) => {
         customActions: [
           {
             id: 'jira-custom-action',
-            name: 'Log Jira Issue',
+            name: 'Jira',
             position: CustomActionsPosition.CONTEXTMENU,
             target: CustomActionTarget.SPOTTER,
           },

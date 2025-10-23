@@ -335,7 +335,7 @@ export function extractDataFromPayload(payload: any) {
       formattedMeasureValue: formattedMeasureValue,
       measureName: measureName,
       visualizationName: visualizationName,
-      source: 'ThoughtSpot Analysis'
+      source: 'Nex AI Analysis'
     };
     
     return extractedData;
@@ -401,7 +401,7 @@ export function extractServiceNowDataFromPayload(payload: any) {
   
   // Create ServiceNow incident data
   const shortDescription = `Data Analysis Issue: ${extractedData.formattedAttributeValue} ${extractedData.measureName || 'data'}`;
-  const description = `Visualization: ${extractedData.visualizationName || 'Not available'}\nAttribute: ${extractedData.formattedAttributeValue}\nMeasure: ${extractedData.formattedMeasureValue} (${extractedData.measureName || 'Not available'})\nPlease investigate this data point for deeper analysis.\n\nSource: ThoughtSpot Analysis`;
+  const description = `Visualization: ${extractedData.visualizationName || 'Not available'}\nAttribute: ${extractedData.formattedAttributeValue}\nMeasure: ${extractedData.formattedMeasureValue} (${extractedData.measureName || 'Not available'})\nPlease investigate this data point for deeper analysis.\n\nSource: Nex AI Analysis`;
   
   return {
     short_description: shortDescription,
