@@ -79,12 +79,10 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
             metadata_tmls: [JSON.stringify(tml)],
           })
           .then((response) => {
-            var element: any = document.querySelector(
-              "#tsEmbed-pre-render-wrapper-liveboardEmbed"
-            );
-            if (element && element.__tsEmbed) {
-              element.__tsEmbed.navigateToLiveboard("");
-              element.__tsEmbed.navigateToLiveboard(thoughtSpotObject.uuid);
+            // Navigate to the liveboard using the embed ref
+            if (lbRef.current) {
+              lbRef.current.navigateToLiveboard("");
+              lbRef.current.navigateToLiveboard(thoughtSpotObject.uuid);
             }
           });
       });
@@ -96,22 +94,30 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
   };
   return (
     <div
-      className="flex flex-col p-8 w-full h-full space-y-2"
+      className={`flex flex-col w-full h-full ${
+        type === PageType.ANALYTICS_DIRECT || type === PageType.MYREPORTS_DIRECT
+          ? "pt-1 px-2 pb-2" // Minimal padding for direct page types - only 4px top padding
+          : "p-8 space-y-2" // Full padding and spacing for submenu pages
+      }`}
       style={{ background: settings.style.backgroundColor, overflow: "auto" }}
     >
-      <div className="mb-4">
-        <div className="flex flex-row items-center mb-4">
+      {/* Title section - show for all page types */}
+      <div className={`${type === PageType.ANALYTICS_DIRECT || type === PageType.MYREPORTS_DIRECT ? "mb-1" : "mb-4"}`}>
+        <div className={`flex flex-row items-center ${type === PageType.ANALYTICS_DIRECT || type === PageType.MYREPORTS_DIRECT ? "mb-1" : "mb-4"}`}>
           <div
-            className="font-bold text-xl"
+            className="font-bold text-xl ml-6"
             style={{ color: settings.style.textColor }}
             dangerouslySetInnerHTML={{ __html: thoughtSpotObject.name }}
           ></div>
-          <div
-            className="text-gray-300 ml-2 hover:cursor-pointer"
-            onClick={() => setMoreOptionsVisible(!moreOptionsVisible)}
-          >
-            <FaCog></FaCog>
-          </div>
+          {/* Settings gear - only show for non-direct page types */}
+          {type !== PageType.ANALYTICS_DIRECT && type !== PageType.MYREPORTS_DIRECT && (
+            <div
+              className="text-gray-300 ml-2 hover:cursor-pointer"
+              onClick={() => setMoreOptionsVisible(!moreOptionsVisible)}
+            >
+              <FaCog></FaCog>
+            </div>
+          )}
           {moreOptionsVisible && (
             <div className="flex flex-row ml-2 space-x-2">
               <div
@@ -123,54 +129,59 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
             </div>
           )}
         </div>
-        {subMenu?.filters && subMenu.filters.length > 0 && (
-          <div className="flex flex-col space-y-2  mb-4">
-            <div className="flex flex-row space-x-2">
-              {subMenu.filters.map((filter, index) => {
-                return (
-                  <>
-                    {filter.type === FilterType.ATTRIBUTE && (
-                      <AttributeFilter
-                        key={index}
-                        filter={filter}
-                        worksheet={subMenu.worksheet}
-                        settings={settings}
-                        setFilter={(filter) => updateRuntimeFilters([filter])}
-                      />
-                    )}
-                    {filter.type === FilterType.DATE && (
-                      <DateFilter
-                        key={index}
-                        filter={filter}
-                        worksheet={subMenu.worksheet}
-                        settings={settings}
-                        setFilter={(filter) => updateRuntimeFilters([filter])}
-                      />
-                    )}
-                  </>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        {type === PageType.MYREPORTS && (
+        {/* Filters and buttons - only show for non-direct page types */}
+        {type !== PageType.ANALYTICS_DIRECT && type !== PageType.MYREPORTS_DIRECT && (
           <>
-            <button
-              className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                setShowSpotter(true);
-              }}
-            >
-              Create a Viz
-            </button>
-            <button
-              className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded ml-2"
-              onClick={() => {
-                setVizSelectorVisible(true);
-              }}
-            >
-              Add a Viz
-            </button>
+            {subMenu?.filters && subMenu.filters.length > 0 && (
+              <div className="flex flex-col space-y-2  mb-4">
+                <div className="flex flex-row space-x-2">
+                  {subMenu.filters.map((filter, index) => {
+                    return (
+                      <>
+                        {filter.type === FilterType.ATTRIBUTE && (
+                          <AttributeFilter
+                            key={index}
+                            filter={filter}
+                            worksheet={subMenu.worksheet}
+                            settings={settings}
+                            setFilter={(filter) => updateRuntimeFilters([filter])}
+                          />
+                        )}
+                        {filter.type === FilterType.DATE && (
+                          <DateFilter
+                            key={index}
+                            filter={filter}
+                            worksheet={subMenu.worksheet}
+                            settings={settings}
+                            setFilter={(filter) => updateRuntimeFilters([filter])}
+                          />
+                        )}
+                      </>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {type === PageType.MYREPORTS && (
+              <>
+                <button
+                  className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded"
+                  onClick={() => {
+                    setShowSpotter(true);
+                  }}
+                >
+                  Create a Viz
+                </button>
+                <button
+                  className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded ml-2"
+                  onClick={() => {
+                    setVizSelectorVisible(true);
+                  }}
+                >
+                  Add a Viz
+                </button>
+              </>
+            )}
           </>
         )}
       </div>
@@ -252,7 +263,6 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
           }}
           
           
-          preRenderId="liveboardEmbed"
           liveboardId={thoughtSpotObject.uuid}
 //isLiveboardStylingAndGroupingEnabled={true}
           frameParams={{ width: "100%", height: "100%" }}
@@ -309,7 +319,6 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({
             setCustomActionData(data);
             setCustomActionPopupVisible(true);
           }}
-          //preRenderId="searchEmbed"
           answerId={thoughtSpotObject.uuid}
           frameParams={{ width: "100%", height: "100%" }}
         />

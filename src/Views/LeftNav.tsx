@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Settings } from "../Settings/SettingsConfiguration";
 import * as HeroIcons from "react-icons/hi2";
 import { Page, PageType, UserContext } from "../App";
-import { ThoughtSpotObject } from "../Settings/ThoughtSpotObjectConfiguration";
+import { ThoughtSpotObject, ThoughtSpotObjectType } from "../Settings/ThoughtSpotObjectConfiguration";
 
 interface LeftNavProps {
   settings: Settings;
@@ -87,6 +87,45 @@ const LeftNav: React.FC<LeftNavProps> = ({
               }
               // @ts-ignore
               const SelectedIcon: any = HeroIcons[subMenu.icon];
+              
+              // Special handling for Analytics - directly load the ITIL Service Management liveboard
+              if (subMenu.name === "Analytics" && subMenu.objects.length > 0) {
+                const itilObject = subMenu.objects.find(obj => obj.name === " ITIL Service Management");
+                if (itilObject) {
+                  return (
+                    <div
+                      key={index}
+                      className={
+                        "flex flex-row items-centere p-1 hover:cursor-pointer rounded-md hover:font-bold"
+                      }
+                      onClick={() => {
+                        setWideMode(false);
+                        setSelectedPage({ type: PageType.ANALYTICS_DIRECT });
+                        setThoughtSpotObject(itilObject);
+                      }}
+                    >
+                      <div className="flex flex-col">
+                        <div className="flex flex-row items-center align-center justify-center text-3xl rounded-lg hover:cursor-pointer">
+                          {SelectedIcon && (
+                            <SelectedIcon
+                              style={{ color: settings.style.iconColor }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      {wideMode && (
+                        <div
+                          className="ml-3 text-lg"
+                          style={{ color: settings.style.iconColor }}
+                        >
+                          {subMenu.name}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+              }
+              
               return (
                 <div
                   key={index}
@@ -130,8 +169,14 @@ const LeftNav: React.FC<LeftNavProps> = ({
                   className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold"
                   onClick={() => {
                     setWideMode(false);
-                    setSelectedPage({ type: PageType.MYREPORTS });
-                    setThoughtSpotObject(null);
+                    // Create a ThoughtSpotObject for the Volume trend answer
+                    const volumeTrendObject = {
+                      name: "Volume trend",
+                      uuid: "a26a3895-e809-4d21-a47c-71db4c821a35",
+                      type: ThoughtSpotObjectType.ANSWER
+                    };
+                    setThoughtSpotObject(volumeTrendObject);
+                    setSelectedPage({ type: PageType.MYREPORTS_DIRECT });
                   }}
                 >
                   <div className="flex flex-col">
