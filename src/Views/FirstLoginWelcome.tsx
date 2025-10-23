@@ -11,18 +11,21 @@ const FirstLoginWelcome: React.FC<FirstLoginWelcomeProps> = ({setShowSettings,se
                 Welcome to the Demo Builder!
             </div>
             <div className='text-lg mb-12'>
-                This is your first time logging in.
-                You need to load some settings to get started.
+                Loading your configuration...
             </div>
         
+            <div className='text-lg mb-8'>
+                The Nexora configuration has been automatically loaded for you.
+            </div>
+            
             <div className='text-lg font-bold mb-4'>
-                Load a Pre-Built Configuration
+                Need a Different Configuration?
             </div>
             <div style={{width:'600px'}}>
                 <GitSettings showAsList={true} setSettings={setSettings}/>
             </div>    
             <div className='text-lg font-bold mt-12 mb-4'>
-                Start From Scratch
+                Or Start From Scratch
             </div>
         
             <button 
