@@ -241,8 +241,8 @@ export function formatDateValue(value: any, attributeName?: string): string {
   }
 }
 
-// Function to extract JIRA ticket data from the ThoughtSpot payload
-export function extractJiraDataFromPayload(payload: any) {
+// Function to extract data from the ThoughtSpot payload (used by both JIRA and ServiceNow)
+export function extractDataFromPayload(payload: any) {
   try {
     let attributeValue: string | null = null;
     let attributeName: string | null = null;
@@ -327,13 +327,7 @@ export function extractJiraDataFromPayload(payload: any) {
     // Format the attribute value intelligently (handles date/time formatting)
     const formattedAttributeValue = attributeValue ? formatDateValue(attributeValue, attributeName || undefined) : 'Unknown';
     
-    // Create summary and description
-    const summary = `Data Analysis Issue: ${formattedAttributeValue} ${measureName || 'data'}`;
-    const description = `Visualization: ${visualizationName || 'Not available'}\nAttribute: ${formattedAttributeValue}\nMeasure: ${formattedMeasureValue} (${measureName || 'Not available'})\nPlease investigate this data point for deeper analysis.`;
-    
-    const jiraData = {
-      summary: summary,
-      description: description,
+    const extractedData = {
       attributeValue: attributeValue,
       formattedAttributeValue: formattedAttributeValue,
       attributeName: attributeName,
@@ -341,15 +335,31 @@ export function extractJiraDataFromPayload(payload: any) {
       formattedMeasureValue: formattedMeasureValue,
       measureName: measureName,
       visualizationName: visualizationName,
-      source: 'ThoughtSpot Analysis'
+      source: 'Nex AI Analysis'
     };
     
-    return jiraData;
+    return extractedData;
     
   } catch (error) {
-    console.error('Error extracting JIRA data:', error);
+    console.error('Error extracting data from payload:', error);
     return null;
   }
+}
+
+// Function to extract JIRA ticket data from the ThoughtSpot payload
+export function extractJiraDataFromPayload(payload: any) {
+  const extractedData = extractDataFromPayload(payload);
+  if (!extractedData) return null;
+  
+  // Create summary and description for JIRA
+  const summary = `Data Analysis Issue: ${extractedData.formattedAttributeValue} ${extractedData.measureName || 'data'}`;
+  const description = `Visualization: ${extractedData.visualizationName || 'Not available'}\nAttribute: ${extractedData.formattedAttributeValue}\nMeasure: ${extractedData.formattedMeasureValue} (${extractedData.measureName || 'Not available'})\nPlease investigate this data point for deeper analysis.`;
+  
+  return {
+    summary: summary,
+    description: description,
+    ...extractedData
+  };
 }
 
 // Function to open JIRA ticket creation page in a new tab
@@ -381,5 +391,71 @@ export function openJiraTicketCreation(jiraData: any) {
   } catch (error) {
     console.error('Error opening JIRA ticket creation:', error);
     alert('Error opening JIRA ticket creation. Please check the console for details.');
+  }
+}
+
+// Function to extract ServiceNow incident data from the ThoughtSpot payload
+export function extractServiceNowDataFromPayload(payload: any) {
+  const extractedData = extractDataFromPayload(payload);
+  if (!extractedData) return null;
+  
+  // Create ServiceNow incident data
+  const shortDescription = `Data Analysis Issue: ${extractedData.formattedAttributeValue} ${extractedData.measureName || 'data'}`;
+  const description = `Visualization: ${extractedData.visualizationName || 'Not available'}\nAttribute: ${extractedData.formattedAttributeValue}\nMeasure: ${extractedData.formattedMeasureValue} (${extractedData.measureName || 'Not available'})\nPlease investigate this data point for deeper analysis.\n\nSource: Nex AI Analysis`;
+  
+  return {
+    short_description: shortDescription,
+    description: description,
+    category: 'Software',
+    priority: '2',
+    urgency: '2',
+    impact: '2',
+    ...extractedData
+  };
+}
+
+// Function to open ServiceNow incident creation page in a new tab
+export function openServiceNowIncidentCreation(serviceNowData: any) {
+  try {
+    // Clean and encode the ServiceNow data
+    const cleanShortDescription = serviceNowData.short_description.toString().trim();
+    const cleanDescription = serviceNowData.description.toString().trim();
+    
+    // Validate that we have ServiceNow content
+    if (!cleanShortDescription || cleanShortDescription === '{}' || cleanShortDescription === 'null') {
+      alert('No data found to create ServiceNow incident. Please try clicking on a data point first.');
+      return;
+    }
+    
+    // Encode the data for URL parameters
+    const encodedShortDescription = encodeURIComponent(cleanShortDescription);
+    const encodedDescription = encodeURIComponent(cleanDescription);
+    const encodedCategory = encodeURIComponent(serviceNowData.category || 'Software');
+    const encodedPriority = encodeURIComponent(serviceNowData.priority || '2');
+    const encodedUrgency = encodeURIComponent(serviceNowData.urgency || '2');
+    const encodedImpact = encodeURIComponent(serviceNowData.impact || '2');
+    
+    // Construct ServiceNow incident creation URL
+    const serviceNowBaseUrl = 'https://dev187185.service-now.com';
+    
+    // Create URL with pre-filled incident form parameters using the correct SOW format
+    // Format: /now/sow/record/incident/-1_uid_1/params/query/[field1=value1^field2=value2]
+    const queryParams = [
+      `short_description=${cleanShortDescription}`,
+      `description=${cleanDescription}`,
+      `category=${serviceNowData.category || 'Software'}`,
+      `priority=${serviceNowData.priority || '2'}`,
+      `urgency=${serviceNowData.urgency || '2'}`,
+      `impact=${serviceNowData.impact || '2'}`
+    ].join('^');
+    
+    const serviceNowCreateUrl = `${serviceNowBaseUrl}/now/sow/record/incident/-1_uid_1/params/query/${encodeURIComponent(queryParams)}`;
+    
+    // Open in new tab
+    window.open(serviceNowCreateUrl, '_blank', 'noopener,noreferrer');
+    
+  } catch (error) {
+    console.error('Error opening ServiceNow incident creation:', error);
+    alert('Error opening ServiceNow incident creation. Please check the console for details.');
   }
 }

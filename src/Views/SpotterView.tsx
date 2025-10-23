@@ -74,6 +74,12 @@ const SpotterView = ({
                 position: CustomActionsPosition.CONTEXTMENU,
                 target: CustomActionTarget.SPOTTER,
               },
+              {
+                id: 'servicenow-custom-action',
+                name: 'ServiceNow',
+                position: CustomActionsPosition.CONTEXTMENU,
+                target: CustomActionTarget.SPOTTER,
+              },
             ]}
             onCustomAction={(data: any) => {
               console.log('🎯 Custom Action event triggered (SpotterView):', data);

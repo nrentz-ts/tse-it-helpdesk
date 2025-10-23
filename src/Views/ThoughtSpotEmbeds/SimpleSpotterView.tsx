@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { SettingsContext } from "../../App";
 import { SimpleSpotter } from "../../Settings/StandardMenus/SimpleSpotterConfig";
 import CustomActionPopup from "../Popups/CustomActionPopup";
-import { extractJiraDataFromPayload, openJiraTicketCreation } from "../../Util/CustomActionsHelper";
+import { extractJiraDataFromPayload, openJiraTicketCreation, extractServiceNowDataFromPayload, openServiceNowIncidentCreation } from "../../Util/CustomActionsHelper";
 
 interface SimpleSpotterProps {
   simpleSpotter: SimpleSpotter;
@@ -31,7 +31,13 @@ const SimpleSpotterView: React.FC<SimpleSpotterProps> = ({ simpleSpotter }) => {
         customActions: [
           {
             id: 'jira-custom-action',
-            name: 'Log Jira Issue',
+            name: 'Jira',
+            position: CustomActionsPosition.CONTEXTMENU,
+            target: CustomActionTarget.SPOTTER,
+          },
+          {
+            id: 'servicenow-custom-action',
+            name: 'ServiceNow',
             position: CustomActionsPosition.CONTEXTMENU,
             target: CustomActionTarget.SPOTTER,
           },
@@ -85,6 +91,25 @@ const SimpleSpotterView: React.FC<SimpleSpotterProps> = ({ simpleSpotter }) => {
             openJiraTicketCreation(jiraData);
           } else {
             alert('No data found to create JIRA ticket. Please try clicking on a data point first.');
+          }
+          return;
+        }
+        
+        // Handle the ServiceNow custom action
+        const serviceNowActionId = 'servicenow-custom-action';
+        if (data.data?.id === serviceNowActionId) {
+          // Ensure popup is closed and data is cleared
+          setCustomActionPopupVisible(false);
+          setCustomActionData(null);
+          
+          // Extract data from the payload for ServiceNow incident creation
+          const serviceNowData = extractServiceNowDataFromPayload(data.data);
+          
+          if (serviceNowData) {
+            // Open ServiceNow incident creation page in a new tab
+            openServiceNowIncidentCreation(serviceNowData);
+          } else {
+            alert('No data found to create ServiceNow incident. Please try clicking on a data point first.');
           }
           return;
         }
