@@ -4,6 +4,11 @@
       "path": "Nexora.txt",
       "name": "Nexora",
       "description": "Nexora configuration"
+    },
+    {
+      "path": "Nexora-green.txt",
+      "name": "Nexora in green",
+      "description": "Same configuration but using our green theming"
     }
   ]
 }

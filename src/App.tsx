@@ -135,6 +135,9 @@ function App() {
   // State for the spotter prompt
   const [spotterLoaded, setSpotterLoaded] = useState<boolean>(false);
   const [spotterPrompt, setSpotterPrompt] = useState<string>("");
+  
+  // Flag to track if auto-loading has been attempted
+  const [autoLoadAttempted, setAutoLoadAttempted] = useState<boolean>(false);
 
   // Embed refs for the ThoughtSpot pre-rendered embeds
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
@@ -378,6 +381,32 @@ function App() {
       setSettings(defaultSettings);
     }
   }, [settings, setSettings]);
+
+  // Auto-load Nexora configuration on first startup
+  useEffect(() => {
+    // Only attempt auto-loading once and only if we haven't tried before
+    if (autoLoadAttempted) return;
+    
+    // Check if we're using default settings (first time loading)
+    const isDefaultSettings = !settings || 
+      !settings.TSURL || 
+      settings.TSURL === "" || 
+      settings === defaultSettings ||
+      (settings.style && settings.style.headerColor === defaultSettings.style.headerColor);
+    
+    if (isDefaultSettings) {
+      setAutoLoadAttempted(true);
+      // Automatically load Nexora.txt configuration
+      GetDemo("Nexora.txt").then((nexoraConfig) => {
+        console.log("Auto-loading Nexora configuration...");
+        setSettings(nexoraConfig);
+      }).catch((error) => {
+        console.error("Failed to auto-load Nexora configuration:", error);
+        // Fallback to default settings if Nexora.txt fails to load
+        setSettings(defaultSettings);
+      });
+    }
+  }, [settings, setSettings, autoLoadAttempted]); // Include dependencies to ensure proper execution
 
   // Initialize the ThoughtSpot SDK when the settings are loaded
   useEffect(() => {
