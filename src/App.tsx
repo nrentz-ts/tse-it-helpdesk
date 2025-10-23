@@ -22,8 +22,6 @@ import {
 } from "@thoughtspot/visual-embed-sdk";
 import {
   LiveboardEmbed,
-  PreRenderedLiveboardEmbed,
-  PreRenderedConversationEmbed,
   SpotterEmbed,
   useEmbedRef,
 } from "@thoughtspot/visual-embed-sdk/react";
@@ -91,6 +89,8 @@ export enum PageType {
   SIMPLESEARCH,
   SIMPLEFULLAPP,
   SUBMENU,
+  ANALYTICS_DIRECT,
+  MYREPORTS_DIRECT,
 }
 
 export interface Page {
@@ -149,17 +149,7 @@ function App() {
 
   // Function to move the spotter embed to the front or back of the page
   const updateSpotterVisibility = useCallback(() => {
-    let spotterEmbed: any = document.getElementById(
-      "tsEmbed-pre-render-wrapper-spotterEmbed"
-    );
-    if (!spotterEmbed) return;
-    if (showSpotter) {
-      setTimeout(() => {
-        spotterEmbed.style.zIndex = 20;
-      }, 500);
-    } else {
-      spotterEmbed.style.zIndex = 0;
-    }
+    // Pre-render functionality removed - spotter visibility handled by component state
   }, [showSpotter]);
 
   const startNewThread = useCallback(() => {
@@ -192,22 +182,7 @@ function App() {
     startNewThread();
   }, [selectedPage?.subMenu, startNewThread]);
 
-  useEffect(() => {
-    if (
-      selectedThoughtSpotObject &&
-      selectedThoughtSpotObject.type === ThoughtSpotObjectType.ANSWER
-    ) {
-      let searchEmbed: any = document.getElementById(
-        "tsEmbed-pre-render-wrapper-searchEmbed"
-      );
-      if (!searchEmbed) return;
-
-      //let navigateURL = "/embed/saved-answer/d8aac0c1-a33b-43da-b68f-afecfc91d8ce";
-      let navigateURL = "embed/saved-answer/" + selectedThoughtSpotObject.uuid;
-      console.log(navigateURL, "switching");
-      searchEmbed.__tsEmbed.trigger(HostEvent.Navigate, navigateURL);
-    }
-  }, [selectedThoughtSpotObject]);
+  // Pre-render functionality removed - search navigation handled by component state
   // Function to reload the page when the user changes
   useEffect(() => {
     if (liveboardEmbedRef.current && user) {
@@ -219,36 +194,9 @@ function App() {
   }, [user, liveboardEmbedRef, setSelectedPage]);
 
   // Update visiblity and listen for pin event when spotter is selected
-  useEffect(() => {
-    let spotterEmbed: any = document.getElementById(
-      "tsEmbed-pre-render-wrapper-spotterEmbed"
-    );
-    if (!spotterEmbed) return;
-    updateSpotterVisibility();
-    if (spotterEmbed.__tsEmbed) {
-      // Listen for the pin event and refresh the liveboard embed
-      spotterEmbed.__tsEmbed.on(EmbedEvent.Pin, (data: any) => {
-        let liveboardId = data.data.liveboardId;
-        let liveboardEmbed: any = document.getElementById(
-          "tsEmbed-pre-render-wrapper-liveboardEmbed"
-        );
-        liveboardEmbed.__tsEmbed.navigateToLiveboard("");
-        liveboardEmbed.__tsEmbed.navigateToLiveboard(liveboardId);
-      });
-    }
-  }, [showSpotter, updateSpotterVisibility]);
+  // Pre-render functionality removed - spotter events handled by component state
 
-  // On page change, ensure spotter visibility is correct and update the pre-rendered embed
-  useEffect(() => {
-    updateSpotterVisibility();
-    let spotterEmbed: any = document.getElementById(
-      "tsEmbed-pre-render-wrapper-spotterEmbed"
-    );
-    if (!spotterEmbed) return;
-    setTimeout(() => {
-      spotterEmbed.__tsEmbed.syncPreRenderStyle();
-    }, 500);
-  }, [selectedPage, updateSpotterVisibility]);
+  // Pre-render functionality removed - spotter visibility handled by component state
 
   // On prompt change, update the spotter embed
   useEffect(() => {
@@ -468,18 +416,8 @@ function App() {
 
   // Trigger the update runtime filters event on the liveboard embed
   const updateFilters = (runtimeFilters: RuntimeFilter[]) => {
-    if (spotterEmbedRef.current) {
-      // have to do it on the __tsembed object because the ref is broken for now.
-      var element: any = document.querySelector(
-        "#tsEmbed-pre-render-wrapper-liveboardEmbed"
-      );
-      if (element && element.__tsEmbed) {
-        element.__tsEmbed.trigger(
-          HostEvent.UpdateRuntimeFilters,
-          runtimeFilters
-        );
-      }
-    }
+    // Pre-render functionality removed - runtime filters handled by component state
+    // This function is now handled by individual embed components
   };
   const presentMode = () => {
     setPresentModeVisible(true);
@@ -606,7 +544,9 @@ function App() {
                         style={
                           selectedPage.type !== PageType.SIMPLESPOTTER &&
                           selectedPage.type !== PageType.SIMPLESEARCH &&
-                          selectedPage.type !== PageType.SIMPLEFULLAPP
+                          selectedPage.type !== PageType.SIMPLEFULLAPP &&
+                          selectedPage.type !== PageType.ANALYTICS_DIRECT &&
+                          selectedPage.type !== PageType.MYREPORTS_DIRECT
                             ? {
                                 overflow: "auto",
                                 left: "15rem",
@@ -616,13 +556,16 @@ function App() {
                             : { 
                                 width: "100%", 
                                 height: "100%", 
-                                padding: "4rem",
+                                padding: "2.5rem",
                                 backgroundColor: settings.style.backgroundColor
                               }
                         }
                       >
                         {/* ThoughtSpot Object View */}
-                        {selectedThoughtSpotObject && isLoggedIn && (
+                        {selectedThoughtSpotObject && 
+                         isLoggedIn && 
+                         selectedPage?.type !== PageType.ANALYTICS_DIRECT &&
+                         selectedPage?.type !== PageType.MYREPORTS_DIRECT && (
                           <ThoughtSpotObjectView
                             user={user}
                             setShowSpotter={setShowSpotter}
@@ -650,12 +593,28 @@ function App() {
                               simpleSearch={settings.simpleSearch}
                             />
                           )}
-                        {selectedPage &&
-                          selectedPage.type === PageType.SIMPLEFULLAPP && (
-                            <SimpleFullAppView
-                              simpleFullApp={settings.simpleFullApp}
-                            />
-                          )}
+                {selectedPage &&
+                  selectedPage.type === PageType.SIMPLEFULLAPP && (
+                    <SimpleFullAppView
+                      simpleFullApp={settings.simpleFullApp}
+                    />
+                  )}
+                {/* Direct Analytics and My Reports Views */}
+                {selectedPage &&
+                  (selectedPage.type === PageType.ANALYTICS_DIRECT ||
+                   selectedPage.type === PageType.MYREPORTS_DIRECT) &&
+                  selectedThoughtSpotObject && (
+                    <ThoughtSpotObjectView
+                      user={user}
+                      setShowSpotter={setShowSpotter}
+                      updateFilters={updateFilters}
+                      presentMode={presentMode}
+                      settings={settings}
+                      type={selectedPage.type}
+                      subMenu={null}
+                      thoughtSpotObject={selectedThoughtSpotObject}
+                    />
+                  )}
                         {/* Sub Menu Landing Page */}
                         {!selectedThoughtSpotObject &&
                           isLoggedIn &&
@@ -715,60 +674,7 @@ function App() {
             </div>
           </div>
 
-          {/*
-            Generate the pre-rendered embeds for the liveboard and spotter embeds
-            These are hidden and only used to pre-render the embeds before they are shown 
-          */}
-          {isLoggedIn && (
-            <div className="z-0">
-              <PreRenderedLiveboardEmbed
-                key={user.name}
-                ref={liveboardEmbedRef}
-                visibleActions={
-                  user.userRole.visibleActions
-                    ? user.userRole.visibleActions
-                    : undefined
-                }
-                //hiddenActions={user.userRole.hiddenActions ? user.userRole.hiddenActions : undefined}
-                preRenderId="liveboardEmbed"
-               // liveboardId="629866db-ad37-46a6-b485-45a128e34051"
-                isLiveboardStylingAndGroupingEnabled={true}
-                
-               //  liveboardId={""} //selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
-              />
-              {/* <PreRenderedSearchEmbed
-                answerId={''}//selectedThoughtSpotObject?.type == ThoughtSpotObjectType.ANSWER &&  selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
-                ref={searchEmbedRef}
-                dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''} 
-                preRenderId={'searchEmbed'}
-                frameParams={{width:'100%',height:'100%'}}
-            /> */}
-
-              <PreRenderedConversationEmbed
-                visibleActions={[
-                  Action.Save,
-                  Action.Pin,
-                  Action.DrillDown,
-                  Action.Explore,
-                  Action.SpotIQAnalyze,
-                  Action.Share,
-                  Action.Download,
-                  Action.AddFilter,
-                ]}
-                disableSourceSelection={true}
-                worksheetId={
-                  selectedPage?.subMenu
-                    ? selectedPage.subMenu.worksheet
-                    : settings.subMenus[0]
-                    ? settings.subMenus[0].worksheet
-                    : ""
-                }
-                ref={spotterEmbedRef}
-                preRenderId="spotterEmbed"
-                frameParams={{ width: "100%", height: "100%" }}
-              />
-            </div>
-          )}
+          {/* Pre-render functionality removed - embeds will load normally */}
           {presentModeVisible && (
             <PresentMode
               setPresentModeVisible={setPresentModeVisible}

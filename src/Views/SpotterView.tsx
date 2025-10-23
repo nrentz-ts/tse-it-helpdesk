@@ -24,14 +24,7 @@ const SpotterView = ({
   const ref = createRef<HTMLDivElement>();
   const [customActionPopupVisible, setCustomActionPopupVisible] = useState<boolean>(false);
   const [customActionData, setCustomActionData] = useState<any>(null);
-  useEffect(() => {
-    if (!spotterLoaded) return;
-    let spotterEmbed = document.getElementById(
-      "tsEmbed-pre-render-wrapper-spotterEmbed"
-    );
-    if (!spotterEmbed) return;
-    spotterEmbed.style.zIndex = "9000";
-  });
+  // Removed pre-render wrapper logic - embeds will load normally
   return (
     <SettingsContext.Consumer>
       {({ settings }) => (
@@ -60,7 +53,6 @@ const SpotterView = ({
             </div>
           </div>
           <SpotterEmbed
-            preRenderId="spotterEmbed"
             // TODO: Figure out how to get the status
             // onSpotterEmbedQuery={() => {
             //   setSpotterLoaded(true);
