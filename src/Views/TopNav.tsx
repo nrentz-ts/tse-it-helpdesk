@@ -43,7 +43,7 @@ const TopNav: React.FC<TopNavProps> = ({
                 alt="logo"
                 onClick={() =>
                   setSelectedPage({
-                    type: PageType.HOMEIMAGE,
+                    type: PageType.ANALYTICSHOME,
                   })
                 }
                 className=" hover:cursor-pointer"
